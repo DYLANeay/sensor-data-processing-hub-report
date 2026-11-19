@@ -1,0 +1,15 @@
+# LaTeX build artifacts (compile with -outdir or latexmk)
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.lol
+*.lof
+*.lot
+*.out
+*.run.xml
+*.synctex*
+*.toc

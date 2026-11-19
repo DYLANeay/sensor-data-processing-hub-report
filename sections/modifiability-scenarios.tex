@@ -1,0 +1,53 @@
+\documentclass[../main-en.tex]{subfiles}
+\begin{document}
+\renewcommand{\baselinestretch}{1.5}
+\section{Modifiability Scenarios}
+\label{sec:modifiability}
+
+% Each scenario follows the quality-attribute scenario form: source,
+% stimulus, artifact, environment, response, response measure. The response
+% measure must be concrete.
+
+\subsection{Add a new unit conversion}
+% TODO: adjust to your final response measures.
+\begin{itemize}
+    \item \textbf{Source:} a developer, during maintenance.
+    \item \textbf{Stimulus:} wants to add a new unit conversion (e.g.
+    Fahrenheit to Kelvin) to the transformation chain.
+    \item \textbf{Artifact:} the configuration file and the transformation
+    module.
+    \item \textbf{Environment:} development time.
+    \item \textbf{Response:} adds one conversion class, registers it in the
+    config, no change to the pipeline or other transformations.
+    \item \textbf{Response measure:} within 2 hours, touching at most one
+    source file and the config file.
+\end{itemize}
+
+\subsection{Add a new sensor source}
+\begin{itemize}
+    \item \textbf{Source:} a developer, during maintenance.
+    \item \textbf{Stimulus:} wants to ingest data from a new source (e.g. a
+    socket feed) in addition to the existing ones.
+    \item \textbf{Artifact:} the source module and the configuration file.
+    \item \textbf{Environment:} development time.
+    \item \textbf{Response:} adds one source class implementing the source
+    interface, registers it in the config.
+    \item \textbf{Response measure:} within 4 hours, without modifying the
+    pipeline, transformations or sinks.
+\end{itemize}
+
+\subsection{Add a new output sink}
+\begin{itemize}
+    \item \textbf{Source:} a developer, during maintenance.
+    \item \textbf{Stimulus:} wants results sent to an additional output
+    (e.g. a database or a remote endpoint) besides the console dashboard and
+    the log file.
+    \item \textbf{Artifact:} the sink module and the configuration file.
+    \item \textbf{Environment:} development time.
+    \item \textbf{Response:} adds one sink class implementing the sink
+    interface, registers it in the config.
+    \item \textbf{Response measure:} within 4 hours, existing outputs keep
+    running unmodified.
+\end{itemize}
+
+\end{document}

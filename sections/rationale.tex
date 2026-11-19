@@ -1,0 +1,33 @@
+\documentclass[../main-en.tex]{subfiles}
+\begin{document}
+\renewcommand{\baselinestretch}{1.5}
+\section{Architectural Design Rationale}
+\label{sec:rationale}
+
+% Format: name the decision, the tactic(s) used, and why — "this tactic is
+% used because...". Keep each rationale short and tied to a quality attribute.
+
+\begin{table}[h]
+  \centering
+  \begin{tabularx}{\textwidth}{| X | X | X |}
+    \hline
+    \textbf{Decision} & \textbf{Tactic} & \textbf{Rationale} \\
+    \hline
+    Sources, transformations and sinks sit behind interfaces & Encapsulate &
+    This tactic is used because new sources and sinks must be added without
+    modifying the pipeline; changes stay local to one module. \\
+    \hline
+    The transformation chain (incl. unit conversion) is defined in a config
+    file & Use configuration parameters, defer binding &
+    This tactic is used because the chain must be changed at deployment
+    time without recompiling the code. \\
+    \hline
+    % TODO: add remaining key decisions, e.g. how sinks receive results,
+    % how readings flow through the pipeline, choice of data format.
+    \hline
+  \end{tabularx}
+  \caption{Key architectural decisions with their tactics and rationale.}
+  \label{tab:rationale}
+\end{table}
+
+\end{document}

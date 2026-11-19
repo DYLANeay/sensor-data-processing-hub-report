@@ -1,0 +1,11 @@
+\documentclass[../main-en.tex]{subfiles}
+\begin{document}
+\renewcommand{\baselinestretch}{1.5}
+\section{Introduction}
+
+% TODO: 1-2 paragraphs presenting the system and what this report answers.
+The Sensor Data Processing Hub collects readings from environmental sensors (temperature, CO$_2$, humidity), applies a chain of transformations to them, and forwards the results to different outputs. The sensors are simulated: CSV files, a random generator, or a simple socket feed.
+
+This document describes the software architecture of the hub. It presents the module view (\cref{sec:module-view}) and the component-and-connector view (\cref{sec:cc-view}), followed by the allocation view (\cref{sec:allocation-view}) where relevant. \Cref{sec:mapping} maps elements between the views, \cref{sec:rationale} justifies the key architectural decisions, and \cref{sec:modifiability} states modifiability scenarios with concrete response measures.
+
+\end{document}

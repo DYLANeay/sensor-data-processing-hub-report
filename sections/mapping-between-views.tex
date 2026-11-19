@@ -1,0 +1,28 @@
+\documentclass[../main-en.tex]{subfiles}
+\begin{document}
+\renewcommand{\baselinestretch}{1.5}
+\section{Mapping Between Views}
+\label{sec:mapping}
+
+% The mapping makes the views consistent: each runtime component traces back
+% to modules, and each module forward to runtime behavior and environment.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{| l | l | l |}
+    \hline
+    \textbf{Module (class)} & \textbf{Component (runtime)} & \textbf{Allocation (environment)} \\
+    \hline
+    CsvSensorSource & CSV simulator & Local process \\ \hline
+    % TODO: complete the rows, e.g.:
+    % RandomSensorSource & random generator & local process \\
+    % Pipeline & transformation runner & local process \\
+    % ConsoleDashboard & console output & local terminal \\
+    % FileLogger & log output & local file system \\
+    \hline
+  \end{tabular}
+  \caption{Mapping between module, component-and-connector and allocation views.}
+  \label{tab:mapping}
+\end{table}
+
+\end{document}

@@ -1,0 +1,31 @@
+\documentclass[../main-en.tex]{subfiles}
+\begin{document}
+\renewcommand{\baselinestretch}{1.5}
+\section{Module View}
+\label{sec:module-view}
+
+% The module view shows the static, code-level decomposition: modules/packages,
+% key classes and interfaces, and their uses relations.
+
+\subsection{Overview}
+% TODO: describe the decomposition (e.g. Sources, Transformations, Sinks,
+% Configuration, Pipeline) and the responsibility of each module.
+The system is decomposed into modules along the data flow: ingestion
+(\emph{Sources}), processing (\emph{Transformations}), and output
+(\emph{Sinks}), tied together by a \emph{Pipeline} and driven by a
+\emph{Configuration} module.
+
+\subsection{Class Diagram}
+\begin{figure}[H]
+\centering
+% TODO: export the UML class diagram to images/uml-module-view.pdf and uncomment:
+% \includegraphics[width=\textwidth]{images/uml-module-view.pdf}
+\caption{Module view: decomposition, key classes and interfaces.}
+\label{fig:module-view}
+\end{figure}
+
+% TODO: walk the reader through the diagram. Name the key interfaces
+% (e.g. ISensorSource, ITransformation, IDataSink) and explain who uses whom
+% and for what.
+
+\end{document}

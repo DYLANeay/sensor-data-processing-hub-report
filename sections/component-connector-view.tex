@@ -1,0 +1,29 @@
+\documentclass[../main-en.tex]{subfiles}
+\begin{document}
+\renewcommand{\baselinestretch}{1.5}
+\section{Component-and-Connector View}
+\label{sec:cc-view}
+
+% The component-and-connector view shows the runtime structure: which
+% components exist during execution and how they interact (connectors).
+
+\subsection{Overview}
+% TODO: describe the runtime elements, e.g. source components producing
+% SensorReadings, the pipeline invoking the transformation chain from the
+% config, and sink components (console dashboard, file logger) consuming
+% processed results.
+
+\subsection{Runtime Diagram}
+\begin{figure}[H]
+\centering
+% TODO: export the UML component diagram to images/uml-cc-view.pdf and uncomment:
+% \includegraphics[width=\textwidth]{images/uml-cc-view.pdf}
+\caption{Component-and-connector view: data flow from sources through the
+transformation chain to the sinks.}
+\label{fig:cc-view}
+\end{figure}
+
+% TODO: describe the connectors (method calls, streams, events?) and the
+% end-to-end flow of a single reading.
+
+\end{document}
