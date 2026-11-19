@@ -1,0 +1,55 @@
+% TEKST %
+% Setter T1-fontkoding slik at spesialtegn (æ, ø, å) håndteres riktig ved bokstavinndeling og søk/kopiering
+\usepackage[T1]{fontenc} 
+
+% PAKKER %
+% Her importerer jeg pakker, om en ikke har bruk for å importere med spesielle instillinger så kan de bare legges i denne listen
+\usepackage{quoting, tabularx, fancyhdr, ragged2e, fullpage, float, booktabs, subcaption} 
+
+%% XCOLOR %%
+% xcolor behøver table innstillingen for å kunne fargere celler i tabeller, og xcdraw for enkelte funksjoner i TablesGenerator.com
+\usepackage[table,xcdraw]{xcolor}
+
+%% TODONOTES %%
+% Tar i bruk pakker her som har behov for noen andre innstillinger enn hva som er satt fra før.
+% todonotes lar en legge inn kommentarer/oppgaver i margen, og colorinlistoftodos gir fargekoder i oversikten over todos
+\usepackage[colorinlistoftodos]{todonotes}
+
+%% SUBFILES %%
+% subfiles lar en dele dokumentet opp i flere filer som kan kompileres hver for seg
+\usepackage{subfiles}
+
+%% TOCBIBIND %%
+% Sørger for at innholdsfortegnelse, figurliste og tabelliste tas med i selve innholdsfortegnelsen (her: med unntak av disse via not-flaggene)
+\usepackage[nottoc,notlof,notlot]{tocbibind}
+
+%% KILDEHÅNDTERING %%
+% Her så tar en i bruk biblatex pakken, som håndterer kildene som blir importert av zotero
+\usepackage[backend=biber,style=ieee,sorting=none]{biblatex}
+
+% Her legger en til biblatex sin bibliografifil
+\addbibresource{bib/references.bib}
+
+%% MINTED %%
+% Dette er i bruk for å kunne få med kode i rapporten
+\usepackage{minted}
+
+% Definerer en lysegrå farge som kan brukes som bakgrunn på kodeblokker
+\definecolor{LightGray}{gray}{0.9}
+
+%% CSQUOTES %%
+% csquotes håndterer anførselstegn riktig, og kreves av biblatex for korrekt sitering
+\usepackage{csquotes}
+
+%% GRAPHICX %%
+% Denne er en del av graphicx pakken, denne forteller overleaf at den skal se etter figurer og andre bilder i mappen images.
+\usepackage{graphicx}
+\graphicspath{{images/}{../images/}} 
+
+%% HYPERREF %%
+% Vi vil ikke at lienker skal være klikkbare og må derfor se til at den har hidelinks, 
+\usepackage[hidelinks]{hyperref}
+
+%% MARGER %%
+% Denne setter hvor stor margene skal være i dokumentet, dette er for å kunne gjøre kommentarer med f.eks \todo
+\setlength{\marginparwidth}{2cm}

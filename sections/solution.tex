@@ -1,0 +1,80 @@
+
+\documentclass[../main-no.tex]{subfiles}
+\begin{document}
+\renewcommand{\baselinestretch}{1.5}
+\section{Løsning}
+I denne seksjonen beskriver du hvordan hver deloppgave faktisk ble løst. Skriv i avsnitt og ha et eget avsnitt per deloppgave og plasser relevante elementer som da figurer, kodesnutter, og tabeller rett etter avsnittet de omtales i. Målet er at leseren skal tydelig se hva som er laget/gjort, hvordan det ble gjort og hvorfor bestemte valg og kommandoer var viktige. \\
+
+For hvert delavsnitt, start med å skrive en kort forklaring av målet ("hva har du/dere laget eller oppnådd?"). Beskriv deretter fremgangsmåten, hva som måtte til for å få det til og hvordan det ble løst. Må også oppgi hvor informasjonen ble hentet og sitere dette.
+
+Her er et eksempel på henvise til en kilde \cite{noauthor_zotero_nodate}, eller en figur som \cref{fig:image2}.
+
+\subsection{Figurer}
+
+\subsubsection{Et bilde}
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{images/test-image.png}
+\caption{SMPTE-fargestolper brukt til kalibrering av fargevisning på skjermer}
+\end{figure}
+
+\subsubsection{To bilder}
+\begin{figure}[H]
+\begin{subfigure}{0.5\textwidth}
+\includegraphics[width=0.9\linewidth]{images/test-image.png}
+\caption{Figur Tekst 1}
+\label{fig:subim1}
+\end{subfigure}
+\begin{subfigure}{0.5\textwidth}
+\includegraphics[width=0.9\linewidth]{images/test-image.png}
+\caption{Figur Tekst 2}
+\label{fig:subim2}
+\end{subfigure}
+
+\caption{En figurtekst som gjelder for begge bildene både a og b.}
+\label{fig:image2}
+\end{figure}
+
+\subsection{Tabell}
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{| c | c | c |}
+    \hline
+    Col1 & Col2 & Col3 \\
+    \hline
+    A & B & C \\
+    \hline
+    D & E & F \\
+    \hline
+  \end{tabular}
+  \caption{Eksempel LaTeX Tabell}
+  \label{tab:example}
+\end{table}
+% Hint: Det er greit å anvende https://www.tablesgenerator.com/ til å lage tabeller i latex
+
+
+\subsection{Listing}
+
+\subsubsection{Python}
+\begin{listing}[!ht]
+\begin{minted}[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+bgcolor=LightGray,
+fontsize=\footnotesize,
+linenos,
+breaklines]{Python}
+from requests import requests
+
+def getData(url: str):
+  return requests.get(url).text()
+
+print (getData("https://github.com/skandix.keys"))
+\end{minted}
+\caption{Python eksempel kode for hvordan man kan bruke requests} % Generere beskrivende tekst under listingen
+\label{lst:eksempelkode} % Legger til listingen i list of
+\end{listing}
+
+\clearpage
+\end{document}

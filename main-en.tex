@@ -1,0 +1,39 @@
+\documentclass[12pt, a4paper]{article} % Setter dokumenttype til article, med 12pt skriftstørrelse og A4-papirformat
+\usepackage[english]{babel} % Setter engelsk språk, slik at babel håndterer orddeling og automatiske tekster (f.eks. "Figure", "Table") på engelsk
+
+\input{preamble.tex} % Henter inn preamble-filen med alle pakker og innstillinger
+
+%% CLEVEREF %%
+% cleveref lager smartere kryssreferanser som automatisk setter inn riktig ord (Figur, Tabell, Likning osv.), og må lastes etter hyperref
+\usepackage[english,nameinlink]{cleveref}
+
+\newcommand{\bibtittel}{References} % Setter tittel på kilder til refrences
+
+% MAIN DOCUMENT % 
+\begin{document} % Starter dokumentet
+
+\subfile{titlepage/titlepage-en} % Setter inn den engelske forsiden
+\thispagestyle{empty} % Fjerner sidetall fra forsiden
+\clearpage % setter inn tomt innhold på siden for at det blir riktig formatering
+
+\pagenumbering{Roman} % Tar i bruk romer tall på innholdsfortegnelse og lister. 
+
+\tableofcontents % Innholdsfortegnelse - Skal starte på 1 og ikke 0
+\clearpage % starter ny side slik at neste del får riktig formatering
+
+\listoffigures % Figurliste
+\listoftables % Tabellliste
+\listoflistings % Listingliste
+\clearpage % starter ny side slik at neste del får riktig formatering
+
+\pagenumbering{arabic} % Setter tilbake til  vanlig side nummering på sidene.
+
+%%% SEKSJONER %%%
+% Her settes alle seksjonene inn i dokumentet via subfiles, i den rekkefølgen de skal vises
+\subfile{sections/_introduction.tex}
+\subfile{sections/solution.tex}
+\subfile{sections/challenges.tex}
+\subfile{sections/reflection.tex}
+\subfile{sections/sources.tex}
+
+\end{document} % Avslutter dokumentet
