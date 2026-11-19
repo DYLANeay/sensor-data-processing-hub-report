@@ -12,6 +12,7 @@
 % SensorReadings, the pipeline invoking the transformation chain from the
 % config, and sink components (console dashboard, file logger) consuming
 % processed results.
+Connector candidates include direct method calls, streams, or a publish/subscribe broker such as MQTT~\cite{marsic_mqtt_nodate}.
 
 \subsection{Runtime Diagram}
 The runtime structure is documented with a UML component diagram~\cite{freecodecamp_uml_2021}.
@@ -25,6 +26,8 @@ transformation chain to the sinks.}
 \end{figure}
 
 % TODO: describe the connectors (method calls, streams, events?) and the
-% end-to-end flow of a single reading.
+% end-to-end flow of a single reading. Connector candidates include direct
+% method calls, streams, or a publish/subscribe broker such as
+% MQTT~\cite{marsic_mqtt_nodate}.
 
 \end{document}
