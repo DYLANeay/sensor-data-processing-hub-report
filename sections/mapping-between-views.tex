@@ -1,28 +1,127 @@
 \documentclass[../main-en.tex]{subfiles}
 \begin{document}
 \renewcommand{\baselinestretch}{1.5}
+
 \section{Mapping Between Views}
 \label{sec:mapping}
 
-% The mapping makes the views consistent: each runtime component traces back
-% to modules, and each module forward to runtime behavior and environment.
+The three views describe the same system from different sides, so they must
+agree. Bass et al. stress that views are related~\cite{bass_software_2021};
+Kruchten's 4+1 model makes the same point, with views kept consistent with
+each other~\cite{kruchten_4plus1_1995}. The mapping is stored in the UML
+model as relationships: each C\&C component carries a \texttt{trace}
+dependency to its class, each assembly a \texttt{manifest} dependency to its
+module, and each project reference a \texttt{reference} dependency to the
+assembly it uses. \Cref{fig:view-mapping} draws all of it: each horizontal
+band is one module, with its runtime components on the left, its classes in
+the middle and its assembly on the right.
 
-\begin{table}[h]
+\begin{figure}[H]
   \centering
-  \begin{tabular}{| l | l | l |}
-    \hline
-    \textbf{Module (class)} & \textbf{Component (runtime)} & \textbf{Allocation (environment)} \\
-    \hline
-    CsvSensorSource & CSV simulator & Local process \\ \hline
-    % TODO: complete the rows, e.g.:
-    % RandomSensorSource & random generator & local process \\
-    % Pipeline & transformation runner & local process \\
-    % ConsoleDashboard & console output & local terminal \\
-    % FileLogger & log output & local file system \\
-    \hline
-  \end{tabular}
-  \caption{Mapping between module, component-and-connector and allocation views.}
-  \label{tab:mapping}
-\end{table}
+  \includegraphics[width=\textwidth,height=0.75\textheight,keepaspectratio]{uml/view-mapping/ViewMapping.png}
+  \caption{Mapping between the three views, one band per module: components
+  (left), classes (middle), deployed assemblies (right).}
+  \label{fig:view-mapping}
+\end{figure}
+
+\Cref{tab:mapping} gives the same mapping element by element.
+
+\begingroup
+\scriptsize
+\renewcommand{\baselinestretch}{1}\selectfont
+\begin{xltabular}{\textwidth}{| l | X | X | l |}
+  \caption{Mapping between module, component-and-connector and allocation
+  views. All assemblies run in the .NET~8 runtime on the laptop.}
+  \label{tab:mapping}\\
+  \hline
+  \textbf{Module} & \textbf{Module view} & \textbf{C\&C view} &
+  \textbf{Allocation view} \\
+  \hline
+  \endfirsthead
+  \hline
+  \textbf{Module} & \textbf{Module view} & \textbf{C\&C view} &
+  \textbf{Allocation view} \\
+  \hline
+  \endhead
+  \hline
+  \endfoot
+  \hline
+  \endlastfoot
+  Application & \texttt{Program} & \texttt{startup} (with the
+  Configuration classes) & \texttt{SensorHub.Application.dll} \\
+  \hline
+  Application & \texttt{Hub} & \texttt{hub} & \texttt{SensorHub.Application.dll} \\
+  \hline
+  Configuration & \texttt{ConfigLoader}, the three factories &
+  \texttt{startup} & \texttt{SensorHub.Configuration.dll} \\
+  \hline
+  Configuration & \texttt{HubConfig}, \texttt{ComponentConfig} & data held
+  by \texttt{startup}, not a component & \texttt{SensorHub.Configuration.dll} \\
+  \hline
+  Ingestion & \texttt{ISensorSource} & connector \texttt{hub}--sources &
+  \texttt{SensorHub.Ingestion.dll} \\
+  \hline
+  Ingestion & \texttt{CsvSensorSource} & \texttt{csv} & \texttt{SensorHub.Ingestion.dll} \\
+  \hline
+  Ingestion & \texttt{RandomSensorSource} & \texttt{random} & \texttt{SensorHub.Ingestion.dll} \\
+  \hline
+  Processing & \texttt{ITransformation} & connectors \texttt{hub}--chain
+  and \texttt{chain}--steps & \texttt{SensorHub.Processing.dll} \\
+  \hline
+  Processing & \texttt{TransformationChain} & \texttt{chain} & \texttt{SensorHub.Processing.dll} \\
+  \hline
+  Processing & \texttt{UnitConverter} & \texttt{converter} & \texttt{SensorHub.Processing.dll} \\
+  \hline
+  Processing & \texttt{MovingAverageSmoother} & \texttt{smoother} & \texttt{SensorHub.Processing.dll} \\
+  \hline
+  Processing & \texttt{ThresholdAlerter} & \texttt{alerter} & \texttt{SensorHub.Processing.dll} \\
+  \hline
+  Output & \texttt{IOutputSink} & connector \texttt{hub}--sinks &
+  \texttt{SensorHub.Output.dll} \\
+  \hline
+  Output & \texttt{ConsoleDashboardSink} & \texttt{dashboard} & \texttt{SensorHub.Output.dll} \\
+  \hline
+  Output & \texttt{LogFileSink} & \texttt{log} & \texttt{SensorHub.Output.dll} \\
+  \hline
+  Core & \texttt{SensorReading}, \texttt{Alert} & data carried on the
+  connectors, not components & \texttt{SensorHub.Core.dll} \\
+  \hline
+  Core & \texttt{SensorType}, \texttt{AlertSeverity} & values inside the
+  data & \texttt{SensorHub.Core.dll} \\
+  \hline
+  all & the whole solution & \texttt{SensorHub} boundary, the process &
+  \texttt{SensorHub.Application.dll} \\
+\end{xltabular}
+\endgroup
+
+Classes with behavior become components, interfaces become connectors, and
+the Core types become the data that travels on the connectors. One module
+gives one assembly. The last row is the process itself: the entry assembly,
+\texttt{SensorHub.Application.dll}, manifests the
+\texttt{SensorHub} process of the C\&C view and loads the other five
+assemblies. The only component that spans two modules is \texttt{startup}:
+\texttt{Program} drives it and the classes of Configuration do the work,
+which is why it belongs to both.
+
+Because the mapping is stored in the model as relationships, we could check
+it: one assembly per module (6/6), each component traces to at least one
+class (10/10), each connector allowed by the uses view (10/10), the
+\texttt{reference} dependencies equal to the \texttt{use} dependencies
+(12 against 12), and each assembly nested in the .NET runtime (6/6). The
+last two rules tie the C\&C and allocation views to the module view: no
+component calls a component whose module it is not allowed to use, and the
+build cannot contain a dependency the uses view forbids.
+
+This is also what makes the modifiability scenarios measurable: adding a CSV
+export sink, for example, is one class and one factory entry in the module
+view, one component on the existing \texttt{IOutputSink} connector of
+\texttt{hub} in the C\&C view, and three assemblies recompiled (Output,
+Configuration, Application) in the allocation view.
+
+% Restore the default float parameters for the rest of the document.
+\setcounter{topnumber}{2}
+\setcounter{totalnumber}{3}
+\renewcommand{\topfraction}{0.7}
+\renewcommand{\floatpagefraction}{0.5}
 
 \end{document}

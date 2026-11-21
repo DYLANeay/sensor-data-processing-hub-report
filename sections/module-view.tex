@@ -1,32 +1,180 @@
 \documentclass[../main-en.tex]{subfiles}
 \begin{document}
 \renewcommand{\baselinestretch}{1.5}
+
 \section{Module View}
 \label{sec:module-view}
 
-% The module view shows the static, code-level decomposition: modules/packages,
-% key classes and interfaces, and their uses relations.
+% Dense figure packing, scoped to the four UML sections (restored at the end
+% of the mapping section, so the rest of the document is unaffected).
+\setcounter{topnumber}{3}
+\setcounter{totalnumber}{5}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\floatpagefraction}{0.85}
 
-\subsection{Overview}
-% TODO: describe the decomposition (e.g. Sources, Transformations, Sinks,
-% Configuration, Pipeline) and the responsibility of each module.
-The system is decomposed into modules along the data flow: ingestion
-(\emph{Sources}), processing (\emph{Transformations}), and output
-(\emph{Sinks}), tied together by a \emph{Pipeline} and driven by a
-\emph{Configuration} module.
+Bass et al. sort the structures of a software system into three categories:
+module structures (the units of code), component-and-connector structures
+(what runs) and allocation structures (how software maps to its
+environment)~\cite{bass_software_2021}. The module view is the static one, and it carries our main quality goal,
+modifiability: getting the dependencies right is what this view is
+about~\cite{wiklund_ch8_nodate}.
 
-\subsection{Class Diagram}
-The decomposition is documented with a UML class diagram, using standard UML 2.0 notation~\cite{freecodecamp_uml_2021}.
-\begin{figure}[H]
-\centering
-% TODO: export the UML class diagram to images/uml-module-view.pdf and uncomment:
-% \includegraphics[width=\textwidth]{images/uml-module-view.pdf}
-\caption{Module view: decomposition, key classes and interfaces.}
-\label{fig:module-view}
+\subsection{Decomposition}
+
+The hub is implemented in C\#. We decomposed it into six modules, each a
+UML package that maps to one C\# namespace under the root namespace
+\texttt{SensorHub}. Application holds the entry point and orchestrates the
+whole hub, Ingestion provides sensor readings from different sources,
+Processing transforms readings through a configurable chain, Output delivers
+results to the console dashboard and the log file, Configuration loads the
+config file and builds the pipeline from it, and Core holds the data types
+shared by all the others. \Cref{fig:module-view} shows the decomposition and
+the content of each module.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.85\textwidth]{uml/module-view/Decom.png}
+  \caption{Decomposition view: the six modules and their content.}
+  \label{fig:module-view}
 \end{figure}
 
-% TODO: walk the reader through the diagram. Name the key interfaces
-% (e.g. ISensorSource, ITransformation, IDataSink) and explain who uses whom
-% and for what.
+The decomposition follows the data flow, with Application, Configuration
+and Core around the three domain modules.
+
+\subsection{Uses view}
+
+A module A \emph{uses} a module B when A needs a correct B to complete its
+own work~\cite{bass_software_2021}. \Cref{fig:uses-view} shows the uses
+relations of the hub. Application uses everything below it; Configuration
+uses Ingestion, Processing and Output because its factories create their
+objects, plus Core to turn the sensor type named in the config file into a
+\texttt{SensorType} value; Ingestion, Processing and Output use nothing but
+Core.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.85\textwidth]{uml/module-view/Uses.png}
+  \caption{Uses view: which module needs which to work correctly.}
+  \label{fig:uses-view}
+\end{figure}
+
+Three rules follow from the diagram:
+
+\begin{itemize}
+  \item Ingestion, Processing and Output never use each other. They only
+  meet through Application.
+  \item Core uses no other module. A change anywhere else cannot break it.
+  \item No dependency cycles. The dependencies go from the top (Application,
+  Configuration) down to Core.
+\end{itemize}
+
+Each rule is a modifiability tactic from the
+course~\cite{wiklund_ch8_nodate}: \emph{restrict dependencies} (a change to
+a source cannot propagate to a transformation or a sink), \emph{increase
+semantic coherence} (Core holds only plain data, so the most used module is
+also the most stable), \emph{encapsulate} (\texttt{Hub} works only through
+interfaces) and \emph{use an intermediary} (the factories in Configuration
+are the only classes that name concrete implementations, as in lab 2 of the
+course).
+
+\subsection{Class view}
+
+The class view shows the classes and interfaces inside each module, in
+standard UML notation~\cite{freecodecamp_uml_2021}, one diagram per module
+(classes of other modules appear as references). Two conventions are enough
+to read them: a directed association is a field (the end reads visibility,
+role name, multiplicity, for example \texttt{-\_sources 1..*}), and
+aggregation (hollow diamond) means the parts can exist on their own while
+composition (filled diamond) means they live and die with the whole.
+
+\Cref{fig:class-application,fig:class-core} show Application and Core. The
+decision in Application is \emph{encapsulate}: \texttt{Hub} holds one or
+more sources, one chain and one or more sinks, all typed by interfaces, and
+runs the loop in \texttt{Run()}; the implementations can change without
+touching it, and any of them can be replaced by a stub in
+tests~\cite{wiklund_ch12_nodate}. Core has no behavior and no dependency:
+\texttt{SensorReading} is one measurement, and it carries its own
+\texttt{Alert} objects, so every transformation keeps the same signature and
+the sinks can show the alerts together with the reading.
+
+\begin{figure}[htbp]
+  \centering
+  \begin{subfigure}{0.18\textwidth}
+    \includegraphics[width=\textwidth]{uml/module-view/CoreClassView.png}
+    \caption{Core.}
+    \label{fig:class-core}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.78\textwidth}
+    \includegraphics[width=\textwidth]{uml/module-view/ApplicationClassView.png}
+    \caption{Application.}
+    \label{fig:class-application}
+  \end{subfigure}
+  \caption{Class views of Core (shared data types) and Application
+  (\texttt{Hub} and the three interfaces it depends on).}
+  \label{fig:class-app-core}
+\end{figure}
+
+\Cref{fig:class-ingestion,fig:class-output} show the two ends of the
+pipeline. Ingestion offers two sources behind \texttt{ISensorSource}, a CSV
+file reader and a random generator; Output offers two sinks behind
+\texttt{IOutputSink}, a console dashboard and a log file. Both the dashboard
+and the smoother below keep state per \texttt{(SensorId, SensorType)}: one
+sensor id such as \texttt{room-a} reports temperature, CO$_2$ and humidity,
+so the latest value must be tracked per type. \texttt{Close()} lets the log
+file be flushed when the hub stops.
+
+\begin{figure}[htbp]
+  \centering
+  \begin{subfigure}{0.48\textwidth}
+    \includegraphics[width=\textwidth]{uml/module-view/IngestionClassView.png}
+    \caption{Ingestion.}
+    \label{fig:class-ingestion}
+  \end{subfigure}\hfill
+  \begin{subfigure}{0.48\textwidth}
+    \includegraphics[width=\textwidth]{uml/module-view/OutputClassView.png}
+    \caption{Output.}
+    \label{fig:class-output}
+  \end{subfigure}
+  \caption{Class views of Ingestion and Output, the two ends of the
+  pipeline.}
+  \label{fig:class-ends}
+\end{figure}
+
+\Cref{fig:class-processing} shows Processing. Each step implements
+\texttt{ITransformation}. \texttt{UnitConverter} applies a linear conversion
+defined in the config file, \texttt{MovingAverageSmoother} averages the last
+values, \texttt{ThresholdAlerter} adds warning or critical alerts, one class
+per rule (\emph{increase semantic coherence}). The
+\texttt{TransformationChain} implements
+\texttt{ITransformation} itself and holds its steps by aggregation: a step
+can exist without a chain, and a step belongs to at most one chain. This is
+the Composite pattern, so the chain can be used anywhere a single step is
+expected.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.85\textwidth]{uml/module-view/ProcessingClassView.png}
+  \caption{Class view of Processing: the three steps and the chain that runs
+  them.}
+  \label{fig:class-processing}
+\end{figure}
+
+\Cref{fig:class-configuration} shows Configuration. \texttt{ConfigLoader}
+parses the JSON file into a \texttt{HubConfig} made of
+\texttt{ComponentConfig} entries, one generic entry (a type name plus
+key/value settings) used for every source, transformation and sink, so a new
+kind of component needs no new config class. The three factories map the
+type name to the concrete class; they are the only classes that name a
+concrete source, step or sink, and because the chain and its parameters come
+from the file, behavior changes with \texttt{config.json}, not with a
+rebuild (\emph{defer binding})~\cite{wiklund_ch8_nodate}.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.85\textwidth]{uml/module-view/ConfigClassView.png}
+  \caption{Class view of Configuration: the loader, the config types and
+  the three factories.}
+  \label{fig:class-configuration}
+\end{figure}
 
 \end{document}
