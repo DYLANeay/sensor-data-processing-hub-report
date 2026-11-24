@@ -1,11 +1,10 @@
 \documentclass[../main-en.tex]{subfiles}
 \begin{document}
-\renewcommand{\baselinestretch}{1.5}
 
 \section{Component-and-Connector View}
 \label{sec:cc-view}
 
-The module view shows how the code is organised. This view shows what exists
+The module view shows how the code is organized. The component-and-connector (C\&C) view shows what exists
 and interacts while the hub runs~\cite{bass_software_2021}: components are
 instances of the classes of the previous section, connectors are the
 interactions between them. \Cref{fig:cc-view} documents the whole runtime
@@ -26,7 +25,7 @@ The overall style is call-return with a central mediator. The component
 sinks; they never call each other. Inside the chain, the steps form a
 pipe-and-filter sequence in the sense of Garlan and
 Shaw~\cite{garlan_shaw_1994}: the output of one step is the input of the
-next, and no step knows its neighbours. The sequence is not realised by
+next, and no step knows its neighbors. The sequence is not realized by
 pipes between the steps, though: \texttt{chain} calls each step in turn and
 passes the result along. Unlike the MQTT broker of lab 3 of the
 course~\cite{marsic_mqtt_nodate}, the components here call each other
@@ -44,7 +43,7 @@ external because it is the standard output of the process, not a part of it.
 \subsection{Connectors and behavior}
 
 The call connectors are assembly connectors named after the interface they
-realise: the ball sits on the provider, the socket on the requirer.
+realize: the ball sits on the provider, the socket on the requirer.
 \texttt{hub} pulls readings from the sources, passes each reading through
 \texttt{chain}, and pushes the result to the sinks with one
 \texttt{Write()} per reading and one \texttt{Close()} at the end;
@@ -64,7 +63,7 @@ The configuration file sets, without any code change, which sources, steps
 and sinks exist and with which parameters; the multiplicities live in the
 module view.
 
-\subsection{Design and modelling decisions}
+\subsection{Design and modeling decisions}
 
 The tactics behind the view are those of \cref{sec:module-view}; here we
 discuss what the diagram adds and how to draw it.

@@ -7,6 +7,10 @@
 \usepackage{quoting, tabularx, fancyhdr, ragged2e, fullpage, float, booktabs, subcaption}
 % xltabular gir longtable med X-kolonner (tabeller som kan brytes over flere sider)
 \usepackage{xltabular}
+% L er en venstrejustert X-kolonne, som unngår store mellomrom i smale tabellceller
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+% Tabelltekster plasseres over tabellen
+\captionsetup[table]{position=top}
 % placeins med section-flagg tvinger floats til å bli i sin egen seksjon
 \usepackage[section]{placeins}
 

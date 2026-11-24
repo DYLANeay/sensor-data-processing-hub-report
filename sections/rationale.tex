@@ -1,6 +1,5 @@
 \documentclass[../main-en.tex]{subfiles}
 \begin{document}
-\renewcommand{\baselinestretch}{1.5}
 \section{Architectural Design Rationale}
 \label{sec:rationale}
 
@@ -9,9 +8,11 @@
 
 Key decisions respond to the architecturally significant requirements of the hub~\cite{wiklund_ch19_nodate}. The tactics follow the quality-attribute tactics of Bass et al.~\cite{bass_software_2021}; the course lectures covered understanding quality attributes~\cite{wiklund_ch3_nodate} and tactics for availability~\cite{wiklund_ch4_nodate}, deployability~\cite{wiklund_ch5_nodate}, performance~\cite{wiklund_ch9_nodate}, security~\cite{wiklund_ch11_nodate}, testability~\cite{wiklund_ch12_nodate} and usability~\cite{wiklund_ch13_nodate}.
 
-\begin{table}[h]
+\begin{table}[htbp]
   \centering
-  \begin{tabularx}{\textwidth}{| X | X | X |}
+  \caption{Key architectural decisions with their tactics and rationale.}
+  \label{tab:rationale}
+  \begin{tabularx}{\textwidth}{| L | L | L |}
     \hline
     \textbf{Decision} & \textbf{Tactic} & \textbf{Rationale} \\
     \hline
@@ -28,8 +29,6 @@ Key decisions respond to the architecturally significant requirements of the hub
     % how readings flow through the pipeline, choice of data format.
     \hline
   \end{tabularx}
-  \caption{Key architectural decisions with their tactics and rationale.}
-  \label{tab:rationale}
 \end{table}
 
 \end{document}

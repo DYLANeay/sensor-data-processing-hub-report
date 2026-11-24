@@ -1,6 +1,5 @@
 \documentclass[../main-en.tex]{subfiles}
 \begin{document}
-\renewcommand{\baselinestretch}{1.5}
 
 \section{Allocation View}
 \label{sec:allocation-view}
@@ -78,8 +77,9 @@ recompiled too.
 \begin{table}[H]
   \centering
   \small
-  \renewcommand{\baselinestretch}{1}\selectfont
-  \begin{tabularx}{\textwidth}{| X | X | X | X |}
+  \caption{Impact of likely changes across the allocation view.}
+  \label{tab:allocation-changes}
+  \begin{tabularx}{\textwidth}{| L | L | L | L |}
     \hline
     \textbf{Change} & \textbf{Edited} & \textbf{Recompiled} &
     \textbf{Redeployed} \\
@@ -103,8 +103,6 @@ recompiled too.
     changed member & all six & the output folder \\
     \hline
   \end{tabularx}
-  \caption{Impact of likely changes across the allocation view.}
-  \label{tab:allocation-changes}
 \end{table}
 
 The most frequent changes need no compilation at all, because the chain, the
