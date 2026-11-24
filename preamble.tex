@@ -38,6 +38,14 @@
 % Her legger en til biblatex sin bibliografifil
 \addbibresource{bib/references.bib}
 
+% Lar lange URL-er brytes også etter små og store bokstaver, så de ikke går ut i margen
+\setcounter{biburllcpenalty}{7000}
+\setcounter{biburlucpenalty}{8000}
+% Ingen strekk inne i URL-er (ellers blir det "https : / / www .")
+\biburlbigskip=0mu \biburlnumskip=0mu \biburlucskip=0mu \biburllcskip=0mu
+% Litt ekstra strekk i kildelisten, så ingen linjer går ut i margen
+\AtBeginBibliography{\setlength{\emergencystretch}{2em}}
+
 %% MINTED %%
 % Dette er i bruk for å kunne få med kode i rapporten
 \usepackage{minted}
