@@ -176,4 +176,38 @@ rebuild (\emph{defer binding})~\cite{wiklund_ch8_nodate}.
   \label{fig:class-configuration}
 \end{figure}
 
+\Cref{lst:config} shows the configuration of the example used in the
+component-and-connector view: two sources, the chain converter, smoother and
+alerter in that order, and two sinks. Each entry is one
+\texttt{ComponentConfig}: the \texttt{Type} selects the class in the factory,
+and the \texttt{Settings} are passed to its constructor.
+
+\begin{listing}[htbp]
+\begin{minted}[fontsize=\footnotesize, bgcolor=LightGray, breaklines]{json}
+{
+  "Sources": [
+    { "Type": "csv",    "Settings": { "path": "data/room-a.csv" } },
+    { "Type": "random", "Settings": {
+        "sensorId": "sim-01", "sensorType": "Temperature", "unit": "C",
+        "min": "18", "max": "24", "count": "20" } }
+  ],
+  "Transformations": [
+    { "Type": "converter", "Settings": {
+        "sensorType": "Temperature", "fromUnit": "C", "toUnit": "F",
+        "factor": "1.8", "offset": "32" } },
+    { "Type": "smoother",  "Settings": { "windowSize": "3" } },
+    { "Type": "alerter",   "Settings": {
+        "sensorType": "Temperature", "warning": "74", "critical": "78" } }
+  ],
+  "Sinks": [
+    { "Type": "dashboard", "Settings": {} },
+    { "Type": "log",       "Settings": { "path": "hub.log" } }
+  ]
+}
+\end{minted}
+\caption{Example \texttt{config.json}: the sources, the transformation chain
+in order (with the Celsius to Fahrenheit conversion) and the sinks.}
+\label{lst:config}
+\end{listing}
+
 \end{document}

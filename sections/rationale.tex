@@ -3,32 +3,106 @@
 \section{Architectural Design Rationale}
 \label{sec:rationale}
 
-% Format: name the decision, the tactic(s) used, and why — "this tactic is
-% used because...". Keep each rationale short and tied to a quality attribute.
+The key decisions respond to the architecturally significant requirements of
+the hub~\cite{wiklund_ch19_nodate}. Two requirements dominate: new sources,
+transformations and sinks will be added, and the unit conversion and the
+transformation chain must be set in a configuration file. Modifiability is
+therefore the main quality attribute, and every decision below applies one of
+its tactics~\cite{bass_software_2021,wiklund_ch8_nodate}. Testability comes
+second, and mostly for free, since components behind interfaces can be replaced
+by stubs~\cite{wiklund_ch12_nodate}. The hub is a single-user, single-process
+program fed by simulated sensors, so availability, performance and security
+are not drivers here. \Cref{tab:rationale} gives each decision, the tactic
+behind it and why this tactic is used.
 
-Key decisions respond to the architecturally significant requirements of the hub~\cite{wiklund_ch19_nodate}. The tactics follow the quality-attribute tactics of Bass et al.~\cite{bass_software_2021}; the course lectures covered understanding quality attributes~\cite{wiklund_ch3_nodate} and tactics for availability~\cite{wiklund_ch4_nodate}, deployability~\cite{wiklund_ch5_nodate}, performance~\cite{wiklund_ch9_nodate}, security~\cite{wiklund_ch11_nodate}, testability~\cite{wiklund_ch12_nodate} and usability~\cite{wiklund_ch13_nodate}.
-
-\begin{table}[htbp]
-  \centering
+\begingroup
+\small
+\begin{xltabular}{\textwidth}{| >{\raggedright\arraybackslash\hsize=0.95\hsize}X
+                               | >{\raggedright\arraybackslash\hsize=0.6\hsize}X
+                               | >{\raggedright\arraybackslash\hsize=1.45\hsize}X |}
   \caption{Key architectural decisions with their tactics and rationale.}
-  \label{tab:rationale}
-  \begin{tabularx}{\textwidth}{| L | L | L |}
-    \hline
-    \textbf{Decision} & \textbf{Tactic} & \textbf{Rationale} \\
-    \hline
-    Sources, transformations and sinks sit behind interfaces & Encapsulate &
-    This tactic is used because new sources and sinks must be added without
-    modifying the pipeline; changes stay local to one module. \\
-    \hline
-    The transformation chain (incl. unit conversion) is defined in a config
-    file & Use configuration parameters, defer binding &
-    This tactic is used because the chain must be changed at deployment
-    time without recompiling the code. \\
-    \hline
-    % TODO: add remaining key decisions, e.g. how sinks receive results,
-    % how readings flow through the pipeline, choice of data format.
-    \hline
-  \end{tabularx}
-\end{table}
+  \label{tab:rationale}\\
+  \hline
+  \textbf{Decision} & \textbf{Tactic} & \textbf{Rationale} \\
+  \hline
+  \endfirsthead
+  \hline
+  \textbf{Decision} & \textbf{Tactic} & \textbf{Rationale} \\
+  \hline
+  \endhead
+  \hline
+  \endfoot
+  \hline
+  \endlastfoot
+  Sources, transformations and sinks sit behind the interfaces
+  \texttt{ISensorSource}, \texttt{ITransformation} and \texttt{IOutputSink}
+  & Encapsulate &
+  This tactic is used because new sources, steps and sinks are the most
+  likely changes: \texttt{Hub} only sees the interfaces, so an implementation
+  can be added or replaced (or stubbed in a test) without touching it. \\
+  \hline
+  The chain, its order, the conversion factors and the thresholds are read
+  from \texttt{config.json} at startup (\cref{lst:config})
+  & Defer binding (configuration-time binding) &
+  This tactic is used because the assignment requires the conversion and the
+  chain in a configuration file, and because these values change more often
+  than the code: a new conversion or another order is a file edit and a
+  restart, with no recompilation. \\
+  \hline
+  \texttt{Hub} is the only component that calls the sources, the chain and
+  the sinks; Ingestion, Processing and Output never use each other
+  & Restrict dependencies &
+  This tactic is used because a change to a source must not propagate to a
+  transformation or a sink. The three domain modules depend on Core only, so
+  each one can change on its own. \\
+  \hline
+  The factories in Configuration are the only classes that name a concrete
+  source, step or sink
+  & Use an intermediary &
+  This tactic is used because adding a component should touch one place
+  outside its own module: one factory entry, while \texttt{Program} and
+  \texttt{Hub} stay unchanged. \\
+  \hline
+  \texttt{TransformationChain} implements \texttt{ITransformation} and holds
+  the steps (Composite pattern)
+  & Abstract common services &
+  This tactic is used because \texttt{Hub} should see one transformation
+  whatever the length of the chain, so steps can be added, removed or
+  reordered without changing \texttt{Hub}. \\
+  \hline
+  Alerts travel inside \texttt{SensorReading}; every step has the same
+  signature \texttt{Apply(SensorReading)}
+  & Encapsulate (one uniform interface) &
+  This tactic is used because steps with the same signature can be put in any
+  order by the configuration, and the sinks receive a reading together with
+  its alerts without a second channel. \\
+  \hline
+  Core holds only plain data types and enumerations, with no behavior and no
+  dependency
+  & Increase semantic coherence &
+  This tactic is used because every module depends on Core, so a change in
+  Core recompiles all six assemblies (\cref{tab:allocation-changes}). Keeping
+  it small and stable keeps the most expensive change rare. \\
+  \hline
+  One C\# project per module; the project references are exactly the uses
+  view
+  & Restrict dependencies (enforced at build time) &
+  This tactic is used because a dependency the uses view forbids then does not
+  compile, so the module view stays true while the code grows. \\
+  \hline
+  One thread: \texttt{Hub} pulls the next reading, runs the chain and writes
+  to the sinks in a loop
+  & \emph{Introduce concurrency} deliberately deferred &
+  The tactic is deferred because a single thread keeps the behavior
+  deterministic and easy to test and demo, and the stateful components need no
+  locking. The cost is that a blocking source would stop the hub; the change
+  to a producer/consumer queue stays private to \texttt{Hub}
+  (\cref{sec:scenario-socket}). \\
+\end{xltabular}
+\endgroup
+
+The alternatives we considered for the C\&C diagram itself, such as nesting
+the steps inside \texttt{chain} or drawing data-flow arrows between steps, are
+discussed in \cref{sec:cc-view}.
 
 \end{document}
