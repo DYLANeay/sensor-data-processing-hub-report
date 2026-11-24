@@ -19,12 +19,7 @@ the assembly contains the code of the module. In .NET~8 every project,
 including the entry project, is built into a \texttt{.dll}, with a small
 launcher next to the entry assembly.
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\textwidth]{uml/allocation-view/Modules.png}
-  \caption{Implementation view: each module and the assembly built from it.}
-  \label{fig:allocation-modules}
-\end{figure}
+\landscapefigure{uml/allocation-view/Modules.png}{Implementation view: each module and the assembly built from it.}{fig:allocation-modules}
 
 \Cref{fig:allocation-references} shows the project references between the
 assemblies; a \texttt{reference} dependency is a \texttt{<ProjectReference>}
@@ -34,13 +29,8 @@ use the types of the projects it references, so a forbidden dependency does
 not compile: the rules of the uses view are checked by the compiler on
 every build.
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\textwidth]{uml/allocation-view/References.png}
-  \caption{Implementation view: project references between the assemblies,
-  same graph as the uses view.}
-  \label{fig:allocation-references}
-\end{figure}
+\landscapefigure{uml/allocation-view/References.png}{Implementation view: project references between the assemblies,
+  same graph as the uses view.}{fig:allocation-references}
 
 We first drew one implementation diagram with packages, assemblies,
 manifests and references all together; the use arrows and the reference
@@ -55,13 +45,8 @@ assemblies and the data files nested in it (nesting is the UML notation for
 ``deployed on''). The console dashboard is not drawn: it is the terminal
 where the hub is started.
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\textwidth]{uml/allocation-view/Deployment.png}
-  \caption{Deployment view: the laptop, the .NET~8 runtime, the assemblies
-  and the files.}
-  \label{fig:allocation-deployment}
-\end{figure}
+\landscapefigure{uml/allocation-view/Deployment.png}{Deployment view: the laptop, the .NET~8 runtime, the assemblies
+  and the files.}{fig:allocation-deployment}
 
 The first program argument is the path of the configuration file
 (\texttt{config.json} if there is none), and relative paths are resolved
