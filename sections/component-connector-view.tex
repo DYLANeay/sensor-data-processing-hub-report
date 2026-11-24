@@ -10,13 +10,18 @@ instances of the classes of the previous section, connectors are the
 interactions between them. \Cref{fig:cc-view} documents the whole runtime
 structure, including the startup phase that builds it.
 
-\begin{figure}[htbp]
+% Wide diagram: on its own landscape page, placed after the current page so
+% the text keeps flowing.
+\afterpage{%
+\begin{landscape}
+\begin{figure}[p]
   \centering
-  \includegraphics[width=\textwidth]{uml/cnc-view/CnC.png}
+  \includegraphics[width=\linewidth,height=0.85\textheight,keepaspectratio]{uml/cnc-view/CnC.png}
   \caption{Component-and-connector view of one running hub, with an example
   configuration of two sources, three steps and two sinks.}
   \label{fig:cc-view}
 \end{figure}
+\end{landscape}}
 
 \subsection{Style and components}
 

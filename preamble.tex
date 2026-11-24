@@ -52,6 +52,9 @@
 %% GRAPHICX %%
 % Denne er en del av graphicx pakken, denne forteller overleaf at den skal se etter figurer og andre bilder i mappen images.
 \usepackage{graphicx}
+% pdflscape gir liggende sider (roteres også i PDF-leseren), afterpage lar
+% en slik side komme etter den nåværende siden uten å avbryte teksten
+\usepackage{pdflscape, afterpage}
 \graphicspath{{images/}{../images/}} 
 
 %% HYPERREF %%

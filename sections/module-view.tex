@@ -32,7 +32,7 @@ the content of each module.
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.85\textwidth]{uml/module-view/Decom.png}
+  \includegraphics[width=\textwidth]{uml/module-view/Decom.png}
   \caption{Decomposition view: the six modules and their content.}
   \label{fig:module-view}
 \end{figure}
@@ -52,7 +52,7 @@ Core.
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.85\textwidth]{uml/module-view/Uses.png}
+  \includegraphics[width=\textwidth]{uml/module-view/Uses.png}
   \caption{Uses view: which module needs which to work correctly.}
   \label{fig:uses-view}
 \end{figure}
@@ -98,19 +98,17 @@ the sinks can show the alerts together with the reading.
 
 \begin{figure}[htbp]
   \centering
-  \begin{subfigure}{0.18\textwidth}
-    \includegraphics[width=\textwidth]{uml/module-view/CoreClassView.png}
-    \caption{Core.}
-    \label{fig:class-core}
-  \end{subfigure}\hfill
-  \begin{subfigure}{0.78\textwidth}
-    \includegraphics[width=\textwidth]{uml/module-view/ApplicationClassView.png}
-    \caption{Application.}
-    \label{fig:class-application}
-  \end{subfigure}
-  \caption{Class views of Core (shared data types) and Application
-  (\texttt{Hub} and the three interfaces it depends on).}
-  \label{fig:class-app-core}
+  \includegraphics[width=\textwidth]{uml/module-view/ApplicationClassView.png}
+  \caption{Class view of Application: \texttt{Hub} and the three interfaces
+  it depends on.}
+  \label{fig:class-application}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.4\textwidth]{uml/module-view/CoreClassView.png}
+  \caption{Class view of Core: the shared data types.}
+  \label{fig:class-core}
 \end{figure}
 
 \Cref{fig:class-ingestion,fig:class-output} show the two ends of the
@@ -124,19 +122,17 @@ file be flushed when the hub stops.
 
 \begin{figure}[htbp]
   \centering
-  \begin{subfigure}{0.48\textwidth}
-    \includegraphics[width=\textwidth]{uml/module-view/IngestionClassView.png}
-    \caption{Ingestion.}
-    \label{fig:class-ingestion}
-  \end{subfigure}\hfill
-  \begin{subfigure}{0.48\textwidth}
-    \includegraphics[width=\textwidth]{uml/module-view/OutputClassView.png}
-    \caption{Output.}
-    \label{fig:class-output}
-  \end{subfigure}
-  \caption{Class views of Ingestion and Output, the two ends of the
-  pipeline.}
-  \label{fig:class-ends}
+  \includegraphics[width=\textwidth]{uml/module-view/IngestionClassView.png}
+  \caption{Class view of Ingestion: the two sources behind
+  \texttt{ISensorSource}.}
+  \label{fig:class-ingestion}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{uml/module-view/OutputClassView.png}
+  \caption{Class view of Output: the two sinks behind \texttt{IOutputSink}.}
+  \label{fig:class-output}
 \end{figure}
 
 \Cref{fig:class-processing} shows Processing. Each step implements
@@ -152,7 +148,7 @@ expected.
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.85\textwidth]{uml/module-view/ProcessingClassView.png}
+  \includegraphics[width=\textwidth]{uml/module-view/ProcessingClassView.png}
   \caption{Class view of Processing: the three steps and the chain that runs
   them.}
   \label{fig:class-processing}
@@ -168,13 +164,18 @@ concrete source, step or sink, and because the chain and its parameters come
 from the file, behavior changes with \texttt{config.json}, not with a
 rebuild (\emph{defer binding})~\cite{wiklund_ch8_nodate}.
 
-\begin{figure}[htbp]
+% Wide diagram: on its own landscape page, placed after the current page so
+% the text keeps flowing.
+\afterpage{%
+\begin{landscape}
+\begin{figure}[p]
   \centering
-  \includegraphics[width=0.85\textwidth]{uml/module-view/ConfigClassView.png}
+  \includegraphics[width=\linewidth,height=0.85\textheight,keepaspectratio]{uml/module-view/ConfigClassView.png}
   \caption{Class view of Configuration: the loader, the config types and
   the three factories.}
   \label{fig:class-configuration}
 \end{figure}
+\end{landscape}}
 
 \Cref{lst:config} shows the configuration of the example used in the
 component-and-connector view: two sources, the chain converter, smoother and
