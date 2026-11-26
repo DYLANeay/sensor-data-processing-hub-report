@@ -2,6 +2,7 @@
 \begin{document}
 
 \section{Component-and-Connector View}
+\style
 \label{sec:cc-view}
 
 The component-and-connector (C\&C) view shows what runs and how it
@@ -37,7 +38,7 @@ external because it is the standard output of the process, not a part of it.
 
 The call connectors are assembly connectors named after the interface they
 realize: the ball sits on the provider, the socket on the requirer.
-\texttt{hub} pulls readings from the sources, passes each reading through
+\texttt{Hub} pulls readings from the sources, passes each reading through
 \texttt{chain}, and pushes the result to the sinks with one
 \texttt{Write()} per reading and one \texttt{Close()} at the end.
 The component \texttt{chain} calls its steps through ordered connectors
