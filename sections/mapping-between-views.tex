@@ -1,24 +1,23 @@
 \documentclass[../main-en.tex]{subfiles}
 \begin{document}
-\renewcommand{\baselinestretch}{1.5}
 
 \section{Mapping Between Views}
 \label{sec:mapping}
 
 The three views describe the same system from different sides, so they must
-agree. Bass et al. stress that views are related~\cite{bass_software_2021};
+agree. Bass et~al.\ stress that views are related~\cite{bass_software_2021};
 Kruchten's 4+1 model makes the same point, with views kept consistent with
 each other~\cite{kruchten_4plus1_1995}. The mapping is stored in the UML
 model as relationships: each C\&C component carries a \texttt{trace}
 dependency to its class, each assembly a \texttt{manifest} dependency to its
 module, and each project reference a \texttt{reference} dependency to the
-assembly it uses. \Cref{fig:view-mapping} draws all of it: each horizontal
+assembly it uses. \Cref{fig:view-mapping} draws the trace and manifest relations (the references are in \cref{fig:allocation-references}): each horizontal
 band is one module, with its runtime components on the left, its classes in
 the middle and its assembly on the right.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
   \centering
-  \includegraphics[width=\textwidth,height=0.75\textheight,keepaspectratio]{uml/view-mapping/ViewMapping.png}
+  \wideimage{uml/view-mapping/ViewMapping.png}
   \caption{Mapping between the three views, one band per module: components
   (left), classes (middle), deployed assemblies (right).}
   \label{fig:view-mapping}
@@ -28,8 +27,7 @@ the middle and its assembly on the right.
 
 \begingroup
 \scriptsize
-\renewcommand{\baselinestretch}{1}\selectfont
-\begin{xltabular}{\textwidth}{| l | X | X | l |}
+\begin{xltabular}{\textwidth}{| l | L | L | l |}
   \caption{Mapping between module, component-and-connector and allocation
   views. All assemblies run in the .NET~8 runtime on the laptop.}
   \label{tab:mapping}\\

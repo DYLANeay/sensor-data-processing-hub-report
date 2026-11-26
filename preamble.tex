@@ -7,6 +7,10 @@
 \usepackage{quoting, tabularx, fancyhdr, ragged2e, fullpage, float, booktabs, subcaption}
 % xltabular gir longtable med X-kolonner (tabeller som kan brytes over flere sider)
 \usepackage{xltabular}
+% L er en venstrejustert X-kolonne, som unngår store mellomrom i smale tabellceller
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+% Tabelltekster plasseres over tabellen
+\captionsetup[table]{position=top}
 % placeins med section-flagg tvinger floats til å bli i sin egen seksjon
 \usepackage[section]{placeins}
 
@@ -34,6 +38,14 @@
 % Her legger en til biblatex sin bibliografifil
 \addbibresource{bib/references.bib}
 
+% Lar lange URL-er brytes også etter små og store bokstaver, så de ikke går ut i margen
+\setcounter{biburllcpenalty}{7000}
+\setcounter{biburlucpenalty}{8000}
+% Ingen strekk inne i URL-er (ellers blir det "https : / / www .")
+\biburlbigskip=0mu \biburlnumskip=0mu \biburlucskip=0mu \biburllcskip=0mu
+% Litt ekstra strekk i kildelisten, så ingen linjer går ut i margen
+\AtBeginBibliography{\setlength{\emergencystretch}{2em}}
+
 %% MINTED %%
 % Dette er i bruk for å kunne få med kode i rapporten
 \usepackage{minted}
@@ -48,6 +60,23 @@
 %% GRAPHICX %%
 % Denne er en del av graphicx pakken, denne forteller overleaf at den skal se etter figurer og andre bilder i mappen images.
 \usepackage{graphicx}
+% pdflscape gir liggende sider (roteres også i PDF-leseren), afterpage lar
+% en slik side komme etter den nåværende siden uten å avbryte teksten
+\usepackage{pdflscape, afterpage}
+% \landscapefigure{fil}{tekst}{label}: diagram på en egen liggende side etter
+% den nåværende siden, nesten hele arkets bredde (marger på 1 cm)
+\newcommand{\landscapefigure}[3]{\afterpage{%
+  \begin{landscape}
+  \begin{figure}[p]
+    \centering
+    \makebox[\linewidth][c]{\includegraphics[width=\dimexpr\paperheight-2cm\relax,height=0.9\textheight,keepaspectratio]{#1}}
+    \caption{#2}
+    \label{#3}
+  \end{figure}
+  \end{landscape}}}
+% \wideimage{fil}: bilde som går litt ut i margene (arkets bredde minus 2 cm)
+\newcommand{\wideimage}[1]{\makebox[\textwidth][c]{%
+  \includegraphics[width=\dimexpr\paperwidth-2cm\relax,height=0.8\textheight,keepaspectratio]{#1}}}
 \graphicspath{{images/}{../images/}} 
 
 %% HYPERREF %%
