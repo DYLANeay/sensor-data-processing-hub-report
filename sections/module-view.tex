@@ -40,10 +40,10 @@ and Core around the three domain modules.
 
 A module A \emph{uses} a module B when A needs a correct B to complete its
 own work~\cite{bass_software_2021}. \Cref{fig:uses-view} shows the uses
-relations of the hub. Application uses everything below it; Configuration
+relations of the hub. Application uses everything below it. Configuration
 uses Ingestion, Processing and Output because its factories create their
 objects, plus Core to turn the sensor type named in the config file into a
-\texttt{SensorType} value; Ingestion, Processing and Output use nothing but
+\texttt{SensorType} value. Ingestion, Processing and Output use nothing but
 Core.
 
 \begin{figure}[htbp]
@@ -85,7 +85,7 @@ composition (filled diamond) means they live and die with the whole.
 \Cref{fig:class-application,fig:class-core} show Application and Core. The
 decision in Application is \emph{encapsulate}: \texttt{Hub} holds one or
 more sources, one chain and one or more sinks, all typed by interfaces, and
-runs the loop in \texttt{Run()}; the implementations can change without
+runs the loop in \texttt{Run()}. The implementations can change without
 touching it, and any of them can be replaced by a stub in
 tests~\cite{wiklund_ch12_nodate}. Core has no behavior and no dependency:
 \texttt{SensorReading} is one measurement, and it carries its own
@@ -109,7 +109,7 @@ the sinks can show the alerts together with the reading.
 
 \Cref{fig:class-ingestion,fig:class-output} show the two ends of the
 pipeline. Ingestion offers two sources behind \texttt{ISensorSource}, a CSV
-file reader and a random generator; Output offers two sinks behind
+file reader and a random generator, and Output offers two sinks behind
 \texttt{IOutputSink}, a console dashboard and a log file. Both the dashboard
 and the smoother below keep state per \texttt{(SensorId, SensorType)}: one
 sensor id such as \texttt{room-a} reports temperature, CO$_2$ and humidity,
@@ -156,7 +156,7 @@ parses the JSON file into a \texttt{HubConfig} made of
 key/value settings) used for every source, transformation and sink, so a new
 kind of component needs no new config class. The three factories map the
 type name to the concrete class, reading typed settings through the
-internal helper \texttt{ConfigSettings}; they are the only classes that name a
+internal helper \texttt{ConfigSettings}. They are the only classes that name a
 concrete source, step or sink, and because the chain and its parameters come
 from the file, behavior changes with \texttt{config.json}, not with a
 rebuild (\emph{defer binding})~\cite{wiklund_ch8_nodate}.

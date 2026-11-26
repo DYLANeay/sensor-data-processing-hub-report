@@ -15,7 +15,7 @@ the startup phase that builds it.
 
 The overall style is call-return with a central mediator. The component
 \texttt{hub} is the only one that calls the sources, the chain and the
-sinks; they never call each other. Inside the chain, the steps form a
+sinks, and they never call each other. Inside the chain, the steps form a
 pipe-and-filter sequence in the sense of Garlan and
 Shaw~\cite{garlan_shaw_1994}: the output of one step is the input of the
 next, and no step knows its neighbors. The sequence is not realized by
@@ -26,8 +26,8 @@ directly: the hub is a single process in which everything is created and
 wired at startup, and a source does not need to know who consumes its
 readings, because it does not send them anywhere, it is asked for them.
 
-The large \texttt{SensorHub} box in \cref{fig:cc-view} is the hub process;
-the components inside it are its runtime parts, and the diagram says which
+The large \texttt{SensorHub} box in \cref{fig:cc-view} is the hub process.
+The components inside it are its runtime parts, and the diagram says which
 interface each of them provides. \texttt{startup} reads \texttt{config.json}
 and creates and wires every component (this is the code of \texttt{Program}
 together with the classes of Configuration). The \texttt{Console} is marked
@@ -39,8 +39,8 @@ The call connectors are assembly connectors named after the interface they
 realize: the ball sits on the provider, the socket on the requirer.
 \texttt{hub} pulls readings from the sources, passes each reading through
 \texttt{chain}, and pushes the result to the sinks with one
-\texttt{Write()} per reading and one \texttt{Close()} at the end;
-\texttt{chain} calls its steps through ordered connectors
+\texttt{Write()} per reading and one \texttt{Close()} at the end.
+The component \texttt{chain} calls its steps through ordered connectors
 \texttt{ITransformation \{1\}} to \texttt{\{4\}}, in the order fixed by the
 config file. The two alerters, \texttt{tempAlerter} and \texttt{co2Alerter},
 are two instances of the same class, \texttt{ThresholdAlerter}: the CO$_2$
@@ -57,12 +57,12 @@ that is exhausted leaves the rotation. When every source is exhausted,
 \texttt{hub} closes the sinks and \texttt{Run()} returns. Everything runs in one thread, the main thread, so
 the state kept by \texttt{smoother} and \texttt{dashboard} needs no locking.
 The configuration file sets, without any code change, which sources, steps
-and sinks exist and with which parameters; the multiplicities live in the
+and sinks exist and with which parameters. The multiplicities live in the
 module view.
 
 \subsection{Design and modeling decisions}
 
-The tactics behind the view are those of \cref{sec:module-view}; here we
+The tactics behind the view are those of \cref{sec:module-view}. Here we
 discuss what the diagram adds and how to draw it.
 
 The order of the configuration, convert then smooth then alert, is
@@ -91,7 +91,7 @@ blocks (a future socket feed waiting for data, for example) would stop the
 whole hub. The alternative, one task per source filling a queue that
 \texttt{hub} consumes (the producer/consumer variant of the \emph{introduce
 concurrency} tactic), would not change the interfaces, only add a private
-queue to \texttt{hub}; we keep it as a modifiability scenario rather than
+queue to \texttt{hub}. We keep it as a modifiability scenario rather than
 build it now.
 
 \end{document}

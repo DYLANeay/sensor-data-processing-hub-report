@@ -44,7 +44,7 @@ why this tactic is used.
   restart, with no recompilation. \\
   \hline
   \texttt{Hub} is the only component that calls the sources, the chain and
-  the sinks; Ingestion, Processing and Output never use each other
+  the sinks, and Ingestion, Processing and Output never use each other
   & Restrict dependencies &
   This tactic is used because a change to a source must not propagate to a
   transformation or a sink. The three domain modules depend on Core only, so
@@ -64,7 +64,7 @@ why this tactic is used.
   whatever the length of the chain, so steps can be added, removed or
   reordered without changing \texttt{Hub}. \\
   \hline
-  Alerts travel inside \texttt{SensorReading}; every step has the same
+  Alerts travel inside \texttt{SensorReading}, and every step has the same
   signature \texttt{Apply(SensorReading)}
   & Encapsulate (one uniform interface) &
   This tactic is used because steps with the same signature can be put in any
@@ -78,7 +78,7 @@ why this tactic is used.
   Core recompiles all six assemblies (\cref{tab:allocation-changes}). Keeping
   it small and stable keeps the most expensive change rare. \\
   \hline
-  One C\# project per module; the project references are exactly the uses
+  One C\# project per module, and the project references are exactly the uses
   view
   & Restrict dependencies (enforced at build time) &
   This tactic is used because a dependency the uses view forbids then does not
@@ -90,7 +90,7 @@ why this tactic is used.
   & \emph{Introduce concurrency} deliberately deferred &
   The tactic is deferred because a single thread keeps the behavior
   deterministic and easy to test and demo, and the stateful components need no
-  locking. The cost is that a blocking source would stop the hub; the change
+  locking. The cost is that a blocking source would stop the hub, but the change
   to a producer/consumer queue stays private to \texttt{Hub}
   (\cref{sec:scenario-socket}). \\
 \end{xltabular}

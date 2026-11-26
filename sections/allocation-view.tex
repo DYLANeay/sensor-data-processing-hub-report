@@ -10,8 +10,8 @@ cost of a change measurable (\cref{tab:allocation-changes}).
 
 \subsection{Implementation}
 
-Each module of the module view is one C\# project, built into one assembly;
-the \texttt{manifest} dependency in \cref{fig:allocation-modules} says that
+Each module of the module view is one C\# project, built into one assembly.
+The \texttt{manifest} dependency in \cref{fig:allocation-modules} says that
 the assembly contains the code of the module. In .NET~8 every project,
 including the entry project, is built into a \texttt{.dll}, with a small
 launcher next to the entry assembly.
@@ -19,7 +19,7 @@ launcher next to the entry assembly.
 \landscapefigure{uml/allocation-view/Modules.png}{Implementation view: each module and the assembly built from it.}{fig:allocation-modules}
 
 \Cref{fig:allocation-references} shows the project references between the
-assemblies; a \texttt{reference} dependency is a \texttt{<ProjectReference>}
+assemblies. A \texttt{reference} dependency is a \texttt{<ProjectReference>}
 in the \texttt{.csproj} file. The graph is exactly the uses view of
 \cref{sec:module-view}, drawn in the same layout. And a project can only
 use the types of the projects it references, so a forbidden dependency does
@@ -30,7 +30,7 @@ every build.
   same graph as the uses view.}{fig:allocation-references}
 
 We first drew one implementation diagram with packages, assemblies,
-manifests and references all together; the use arrows and the reference
+manifests and references all together, but the use arrows and the reference
 arrows crossed and the result was unreadable, so we split it into the two
 diagrams above and gave the references diagram the layout of the uses view.
 

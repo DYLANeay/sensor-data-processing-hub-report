@@ -2,7 +2,7 @@
 \begin{document}
 \section{Introduction}
 
-The Sensor Data Processing Hub collects readings from environmental sensors (temperature, CO$_2$, humidity), applies a chain of transformations to them (unit conversion, smoothing, threshold alerts), and sends the results to a console dashboard and a log file. The sensors are simulated; we implement two sources, a CSV file reader and a random generator, and treat a socket feed as a future change (\cref{sec:scenario-socket}). The unit conversion and the transformation chain are defined in a configuration file.
+The Sensor Data Processing Hub collects readings from environmental sensors (temperature, CO$_2$, humidity), applies a chain of transformations to them (unit conversion, smoothing, threshold alerts), and sends the results to a console dashboard and a log file. The sensors are simulated. We implement two sources, a CSV file reader and a random generator, and treat a socket feed as a future change (\cref{sec:scenario-socket}). The unit conversion and the transformation chain are defined in a configuration file.
 
 Our main quality attribute is modifiability: new sources, transformations and sinks are expected. The hub is therefore built around a central mediator, \texttt{Hub}, that passes each reading through a pipe-and-filter chain of transformations to the sinks.
 
