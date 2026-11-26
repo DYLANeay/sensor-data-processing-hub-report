@@ -4,14 +4,12 @@
 \section{Component-and-Connector View}
 \label{sec:cc-view}
 
-The module view shows how the code is organized. The component-and-connector (C\&C) view shows what exists
-and interacts while the hub runs~\cite{bass_software_2021}: components are
-instances of the classes of the previous section, connectors are the
-interactions between them. \Cref{fig:cc-view} documents the whole runtime
-structure, including the startup phase that builds it.
+The component-and-connector (C\&C) view shows what runs and how it
+interacts. \Cref{fig:cc-view} shows the whole runtime structure, including
+the startup phase that builds it.
 
-\landscapefigure{uml/cnc-view/CnC.png}{Component-and-connector view of one running hub, with an example
-  configuration of two sources, three steps and two sinks.}{fig:cc-view}
+\landscapefigure{uml/cnc-view/CnC.png}{Component-and-connector view of one running hub, with the
+  configuration of \cref{lst:config}: two sources, four steps and two sinks.}{fig:cc-view}
 
 \subsection{Style and components}
 
@@ -43,16 +41,20 @@ realize: the ball sits on the provider, the socket on the requirer.
 \texttt{chain}, and pushes the result to the sinks with one
 \texttt{Write()} per reading and one \texttt{Close()} at the end;
 \texttt{chain} calls its steps through ordered connectors
-\texttt{ITransformation \{1\}}, \texttt{\{2\}}, \texttt{\{3\}}, in the order
-fixed by the config file. The data travelling on every call is a
+\texttt{ITransformation \{1\}} to \texttt{\{4\}}, in the order fixed by the
+config file. The two alerters, \texttt{tempAlerter} and \texttt{co2Alerter},
+are two instances of the same class, \texttt{ThresholdAlerter}: the CO$_2$
+alert is one more entry in the config file, not new code. The data travelling on every call is a
 \texttt{SensorReading}, which carries its alerts. The files are artifacts
 outside the process: \texttt{config.json} and the CSV data are read,
 \texttt{hub.log} is written.
 
-After \texttt{startup} calls \texttt{Run()}, the loop repeats: take the next
-reading from a source, pass it through the chain, write it to every sink.
-When every source is exhausted, \texttt{hub} closes the sinks and
-\texttt{Run()} returns. Everything runs in one thread, the main thread, so
+After \texttt{startup} calls \texttt{Run()}, the loop reads the sources
+round-robin: it takes one reading from each source in turn, passes it
+through the chain, writes it to every sink, then waits \texttt{delayMs}
+(200\,ms in \cref{lst:config}) so the dashboard visibly updates. A source
+that is exhausted leaves the rotation. When every source is exhausted,
+\texttt{hub} closes the sinks and \texttt{Run()} returns. Everything runs in one thread, the main thread, so
 the state kept by \texttt{smoother} and \texttt{dashboard} needs no locking.
 The configuration file sets, without any code change, which sources, steps
 and sinks exist and with which parameters; the multiplicities live in the
@@ -63,7 +65,7 @@ module view.
 The tactics behind the view are those of \cref{sec:module-view}; here we
 discuss what the diagram adds and how to draw it.
 
-The order of the example configuration, convert then smooth then alert, is
+The order of the configuration, convert then smooth then alert, is
 a configuration choice: the thresholds are written in the converted unit,
 and alerting on smoothed values avoids alerts caused by one noisy reading.
 Another order only needs a change in the config file.

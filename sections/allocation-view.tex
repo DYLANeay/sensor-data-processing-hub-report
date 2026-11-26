@@ -4,12 +4,9 @@
 \section{Allocation View}
 \label{sec:allocation-view}
 
-Allocation structures map software elements to things that are not software:
-files, hardware, teams~\cite{bass_software_2021}. The hub is a single
-process on one machine, so this view is short, but it makes the cost of a
-change measurable (\cref{tab:allocation-changes}). A work
-assignment view is left out; for a project of this size it would bring
-nothing.
+The allocation view shows where the code is built and where it runs. The
+hub is one process on one machine, so the view is short, but it makes the
+cost of a change measurable (\cref{tab:allocation-changes}).
 
 \subsection{Implementation}
 
@@ -49,9 +46,11 @@ where the hub is started.
   and the files.}{fig:allocation-deployment}
 
 The first program argument is the path of the configuration file
-(\texttt{config.json} if there is none), and relative paths are resolved
-against the output folder rather than the current directory, so the hub
-finds its files whatever directory it is started from.
+(\texttt{config.json} in the current folder if there is none). At startup
+the hub moves to the folder of \texttt{config.json}, so the paths written in
+it (the CSV files, \texttt{hub.log}) are relative to that file: a
+configuration and its data form one self-contained folder, whatever folder
+the hub is started from.
 
 \subsection{Impact of likely changes}
 
@@ -69,30 +68,30 @@ recompiled too.
     \textbf{Change} & \textbf{Edited} & \textbf{Recompiled} &
     \textbf{Redeployed} \\
     \hline
-    Chain order, conversion, threshold, window size & \texttt{config.json} &
+    Chain order, conversion, threshold, window size, delay & \texttt{config.json} &
     none & nothing, restart the hub \\
     \hline
     Add a transformation & one class in Processing, one entry in the
     transformation factory, \texttt{config.json} & Processing,
-    Configuration, Application & the output folder \\
+    Configuration, Application & the build output \\
     \hline
     Add a source & one class in Ingestion, one entry in the
     \texttt{SourceFactory}, \texttt{config.json} & Ingestion, Configuration,
-    Application & the output folder \\
+    Application & the build output \\
     \hline
     Add a sink & one class in Output, one entry in \texttt{SinkFactory},
-    \texttt{config.json} & Output, Configuration, Application & the output
-    folder \\
+    \texttt{config.json} & Output, Configuration, Application & the build
+    output \\
     \hline
     Change a shared data type in Core & Core and every module that uses the
-    changed member & all six & the output folder \\
+    changed member & all six & the build output \\
     \hline
   \end{tabularx}
 \end{table}
 
 The most frequent changes need no compilation at all, because the chain, the
-conversions and the thresholds live in \texttt{config.json}, a file next to
-the binaries~\cite{wiklund_ch8_nodate}. Adding a source, transformation or
+conversions, the thresholds and the delay live in \texttt{config.json}, a
+plain file read at startup and not compiled into the assemblies. Adding a source, transformation or
 sink never touches the other two kinds, and Core is the expensive one: every
 project references it, which is a second reason to keep it to plain data
 types.

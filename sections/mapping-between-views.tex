@@ -4,10 +4,8 @@
 \section{Mapping Between Views}
 \label{sec:mapping}
 
-The three views describe the same system from different sides, so they must
-agree. Bass et~al.\ stress that views are related~\cite{bass_software_2021};
-Kruchten's 4+1 model makes the same point, with views kept consistent with
-each other~\cite{kruchten_4plus1_1995}. The mapping is stored in the UML
+The three views describe the same system, so they must agree. The mapping
+is stored in the UML
 model as relationships: each C\&C component carries a \texttt{trace}
 dependency to its class, each assembly a \texttt{manifest} dependency to its
 module, and each project reference a \texttt{reference} dependency to the
@@ -56,6 +54,10 @@ the middle and its assembly on the right.
   Configuration & \texttt{HubConfig}, \texttt{ComponentConfig} & data held
   by \texttt{startup}, not a component & \texttt{SensorHub.Configuration.dll} \\
   \hline
+  Configuration & \texttt{ConfigSettings} (internal helper) & called by the
+  factories inside \texttt{startup}, not a component &
+  \texttt{SensorHub.Configuration.dll} \\
+  \hline
   Ingestion & \texttt{ISensorSource} & connector \texttt{hub}--sources &
   \texttt{SensorHub.Ingestion.dll} \\
   \hline
@@ -72,7 +74,8 @@ the middle and its assembly on the right.
   \hline
   Processing & \texttt{MovingAverageSmoother} & \texttt{smoother} & \texttt{SensorHub.Processing.dll} \\
   \hline
-  Processing & \texttt{ThresholdAlerter} & \texttt{alerter} & \texttt{SensorHub.Processing.dll} \\
+  Processing & \texttt{ThresholdAlerter} & \texttt{tempAlerter} and
+  \texttt{co2Alerter} (two instances) & \texttt{SensorHub.Processing.dll} \\
   \hline
   Output & \texttt{IOutputSink} & connector \texttt{hub}--sinks &
   \texttt{SensorHub.Output.dll} \\
@@ -92,8 +95,9 @@ the middle and its assembly on the right.
 \end{xltabular}
 \endgroup
 
-Classes with behavior become components, interfaces become connectors, and
-the Core types become the data that travels on the connectors. One module
+Classes with behavior become components (\texttt{ThresholdAlerter} twice,
+once per sensor type), interfaces become connectors, and the Core types
+become the data that travels on the connectors. One module
 gives one assembly. The last row is the process itself: the entry assembly,
 \texttt{SensorHub.Application.dll}, manifests the
 \texttt{SensorHub} process of the C\&C view and loads the other five
@@ -103,10 +107,10 @@ which is why it belongs to both.
 
 Because the mapping is stored in the model as relationships, we could check
 it: one assembly per module (6/6), each component traces to at least one
-class (10/10), each connector allowed by the uses view (10/10), the
+class (11/11), each connector allowed by the uses view (11/11), the
 \texttt{reference} dependencies equal to the \texttt{use} dependencies
 (12 against 12), and each assembly nested in the .NET runtime (6/6). The
-last two rules tie the C\&C and allocation views to the module view: no
+third and fourth rules tie the C\&C and allocation views to the module view: no
 component calls a component whose module it is not allowed to use, and the
 build cannot contain a dependency the uses view forbids.
 

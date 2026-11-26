@@ -11,12 +11,8 @@
 \renewcommand{\topfraction}{0.9}
 \renewcommand{\floatpagefraction}{0.85}
 
-Bass et~al.\ sort the structures of a software system into three categories:
-module structures (the units of code), component-and-connector structures
-(what runs) and allocation structures (how software maps to its
-environment)~\cite{bass_software_2021}. The module view is the static one, and it carries our main quality goal,
-modifiability: getting the dependencies right is what this view is
-about~\cite{wiklund_ch8_nodate}.
+The module view shows how the code is split into modules and which module
+depends on which. It is where modifiability is mostly decided.
 
 \subsection{Decomposition}
 
@@ -159,45 +155,52 @@ parses the JSON file into a \texttt{HubConfig} made of
 \texttt{ComponentConfig} entries, one generic entry (a type name plus
 key/value settings) used for every source, transformation and sink, so a new
 kind of component needs no new config class. The three factories map the
-type name to the concrete class; they are the only classes that name a
+type name to the concrete class, reading typed settings through the
+internal helper \texttt{ConfigSettings}; they are the only classes that name a
 concrete source, step or sink, and because the chain and its parameters come
 from the file, behavior changes with \texttt{config.json}, not with a
 rebuild (\emph{defer binding})~\cite{wiklund_ch8_nodate}.
 
-\landscapefigure{uml/module-view/ConfigClassView.png}{Class view of Configuration: the loader, the config types and
-  the three factories.}{fig:class-configuration}
+\landscapefigure{uml/module-view/ConfigClassView.png}{Class view of Configuration: the loader, the config types,
+  the three factories and their helper.}{fig:class-configuration}
 
-\Cref{lst:config} shows the configuration of the example used in the
-component-and-connector view: two sources, the chain converter, smoother and
-alerter in that order, and two sinks. Each entry is one
-\texttt{ComponentConfig}: the \texttt{Type} selects the class in the factory,
-and the \texttt{Settings} are passed to its constructor.
+\Cref{lst:config} shows the \texttt{config.json} delivered with the code,
+which is the configuration of the component-and-connector view: two sources,
+a chain of four steps (conversion, smoothing, then one threshold alerter for
+temperature and one for CO$_2$), two sinks, and the pause after each reading.
+Each entry is one \texttt{ComponentConfig}: the \texttt{type} selects the
+class in the factory, and the \texttt{settings} are passed to its
+constructor. The temperature thresholds are in degrees Fahrenheit, because
+the alerter runs after the conversion.
 
 \begin{listing}[htbp]
 \begin{minted}[fontsize=\footnotesize, bgcolor=LightGray, breaklines]{json}
 {
-  "Sources": [
-    { "Type": "csv",    "Settings": { "path": "data/room-a.csv" } },
-    { "Type": "random", "Settings": {
+  "delayMs": 200,
+  "sources": [
+    { "type": "csv", "settings": { "path": "data/room-a.csv" } },
+    { "type": "random", "settings": {
         "sensorId": "sim-01", "sensorType": "Temperature", "unit": "C",
-        "min": "18", "max": "24", "count": "20" } }
+        "minValue": "18", "maxValue": "30", "count": "2160" } }
   ],
-  "Transformations": [
-    { "Type": "converter", "Settings": {
-        "sensorType": "Temperature", "fromUnit": "C", "toUnit": "F",
-        "factor": "1.8", "offset": "32" } },
-    { "Type": "smoother",  "Settings": { "windowSize": "3" } },
-    { "Type": "alerter",   "Settings": {
-        "sensorType": "Temperature", "warning": "74", "critical": "78" } }
+  "transformations": [
+    { "type": "unitConverter", "settings": { "sensorType": "Temperature",
+        "fromUnit": "C", "toUnit": "F", "factor": "1.8", "offset": "32" } },
+    { "type": "movingAverage", "settings": { "windowSize": "3" } },
+    { "type": "threshold", "settings": { "sensorType": "Temperature",
+        "warningThreshold": "80.6", "criticalThreshold": "84.2" } },
+    { "type": "threshold", "settings": { "sensorType": "CO2",
+        "warningThreshold": "1000", "criticalThreshold": "1200" } }
   ],
-  "Sinks": [
-    { "Type": "dashboard", "Settings": {} },
-    { "Type": "log",       "Settings": { "path": "hub.log" } }
+  "sinks": [
+    { "type": "console" },
+    { "type": "logFile", "settings": { "path": "hub.log" } }
   ]
 }
 \end{minted}
-\caption{Example \texttt{config.json}: the sources, the transformation chain
-in order (with the Celsius to Fahrenheit conversion) and the sinks.}
+\caption{The \texttt{config.json} delivered with the code: the sources, the
+transformation chain in order (with the Celsius to Fahrenheit conversion),
+the sinks and the delay.}
 \label{lst:config}
 \end{listing}
 

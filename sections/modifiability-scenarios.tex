@@ -3,12 +3,11 @@
 \section{Modifiability Scenarios}
 \label{sec:modifiability}
 
-Each scenario follows the quality-attribute scenario form of
-Bass et~al.~\cite{bass_software_2021}: source, stimulus, artifact,
-environment, response and response measure. Modifiability is treated in the
-corresponding course lecture~\cite{wiklund_ch8_nodate}. We chose four changes
-that are likely to come, and the response measures are read off the module
-and allocation views (\cref{tab:allocation-changes}).
+Each scenario has the six parts of a quality-attribute
+scenario~\cite{bass_software_2021}: source, stimulus, artifact, environment,
+response and response measure. The four changes below are likely to come;
+their measures are read off the module and allocation views
+(\cref{tab:allocation-changes}).
 
 \subsection{Change a unit conversion}
 \label{sec:scenario-conversion}
@@ -23,11 +22,13 @@ needs no code.
   \item \textbf{Source:} the person who deploys the hub.
   \item \textbf{Stimulus:} wants temperatures shown in kelvin instead of
   degrees Fahrenheit.
-  \item \textbf{Artifact:} the \texttt{converter} entry of the transformation
-  chain in \texttt{config.json}.
+  \item \textbf{Artifact:} the \texttt{unitConverter} entry and the
+  temperature \texttt{threshold} entry of the transformation chain in
+  \texttt{config.json}.
   \item \textbf{Environment:} deployment time, hub stopped.
   \item \textbf{Response:} sets the target unit to \texttt{K}, the factor to
-  1 and the offset to 273.15, and restarts the hub.
+  1 and the offset to 273.15, rewrites the two temperature thresholds in
+  kelvin (they apply to the converted value), and restarts the hub.
   \item \textbf{Response measure:} 1 file edited (\texttt{config.json}),
   0 source files changed, 0 assemblies recompiled, done in under 10 minutes.
 \end{itemize}
@@ -96,10 +97,10 @@ the sensor type is an enumeration in Core.
   \texttt{config.json}.
   \item \textbf{Environment:} development time.
   \item \textbf{Response:} adds the value \texttt{Pressure} to
-  \texttt{SensorType} and the thresholds for pressure in
-  \texttt{config.json}. The CSV source parses the type by name, and the
-  converter, smoother, alerter and dashboard take the sensor type as data, so
-  none of them changes.
+  \texttt{SensorType} and one \texttt{threshold} entry for pressure in
+  \texttt{config.json}. The CSV source and the factories parse the type by
+  name, and the converter, smoother, alerters and dashboard take the sensor
+  type as data, so none of them changes.
   \item \textbf{Response measure:} 1 line changed in Core plus config
   entries; 0 lines changed in the other modules; all six assemblies
   recompiled, since every project references Core

@@ -3,17 +3,11 @@
 \section{Architectural Design Rationale}
 \label{sec:rationale}
 
-The key decisions respond to the architecturally significant requirements of
-the hub~\cite{wiklund_ch19_nodate}. Two requirements dominate: new sources,
-transformations and sinks will be added, and the unit conversion and the
-transformation chain must be set in a configuration file. Modifiability is
-therefore the main quality attribute, and every decision below applies one of
-its tactics~\cite{bass_software_2021,wiklund_ch8_nodate}. Testability comes
-second, and mostly for free, since components behind interfaces can be replaced
-by stubs~\cite{wiklund_ch12_nodate}. The hub is a single-user, single-process
-program fed by simulated sensors, so availability, performance and security
-are not drivers here. \Cref{tab:rationale} gives each decision, the tactic
-behind it and why this tactic is used.
+Modifiability is the main quality attribute: new sources, transformations
+and sinks will be added, and the unit conversion and the transformation chain
+must be set in a configuration file. \Cref{tab:rationale} gives each
+decision, the modifiability tactic behind it~\cite{bass_software_2021} and
+why this tactic is used.
 
 \begingroup
 \small
@@ -90,8 +84,9 @@ behind it and why this tactic is used.
   This tactic is used because a dependency the uses view forbids then does not
   compile, so the module view stays true while the code grows. \\
   \hline
-  One thread: \texttt{Hub} pulls the next reading, runs the chain and writes
-  to the sinks in a loop
+  One thread: \texttt{Hub} pulls one reading from each source in turn
+  (round-robin), runs the chain, writes to the sinks and waits
+  \texttt{delayMs}
   & \emph{Introduce concurrency} deliberately deferred &
   The tactic is deferred because a single thread keeps the behavior
   deterministic and easy to test and demo, and the stateful components need no
